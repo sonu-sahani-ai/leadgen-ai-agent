@@ -6,3 +6,4 @@ sqlalchemy
 requests
 beautifulsoup4
 pydantic
+jinja2
