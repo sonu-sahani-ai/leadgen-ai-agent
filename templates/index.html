@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LeadGen AI Agent</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        input { padding: 8px; margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <h1>LeadGen AI Agent</h1>
+
+    <!-- Search form -->
+    <form id="leadForm" onsubmit="searchLeads(event)">
+        <input type="text" id="clinicType" placeholder="Clinic type" required>
+        <input type="text" id="location" placeholder="Location" required>
+        <button type="submit">Search Leads</button>
+    </form>
+
+    <h2>Results</h2>
+    <table id="leadsTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Website</th>
+                <th>Email</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lead in leads %}
+            <tr>
+                <td>{{ lead.name }}</td>
+                <td>{{ lead.website }}</td>
+                <td>{{ lead.email }}</td>
+                <td>{{ lead.score }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        async function searchLeads(event) {
+            event.preventDefault(); // prevent form submission reload
+            const clinic = document.getElementById("clinicType").value;
+            const location = document.getElementById("location").value;
+
+            const res = await fetch(`/search-leads?clinic=${clinic}&location=${location}`);
+            const data = await res.json();
+
+            // Update table dynamically
+            const tbody = document.querySelector("#leadsTable tbody");
+            tbody.innerHTML = ""; // clear old results
+            data.forEach(lead => {
+                const row = `<tr>
+                    <td>${lead.name}</td>
+                    <td>${lead.website}</td>
+                    <td>${lead.email}</td>
+                    <td>${lead.score}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+    </script>
+</body>
+</html>
